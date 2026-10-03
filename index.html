@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="./img/samurai.png" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>Samurai XD</title>
+  </head>
+  <body>
+    <div id="game-screen">
+      <div id="hud">
+        <div class="hud-side" id="player-hud">
+          <div class="health-bar">
+            <div class="health-trail" id="player-health-trail"></div>
+            <div class="health-fill" id="player-health"></div>
+          </div>
+          <div class="fighter-label">
+            <span class="player-tag">P1</span>
+            <span id="player-name"></span>
+          </div>
+        </div>
+        <div id="timer">60</div>
+        <div class="hud-side" id="enemy-hud">
+          <div class="health-bar">
+            <div class="health-trail" id="enemy-health-trail"></div>
+            <div class="health-fill" id="enemy-health"></div>
+          </div>
+          <div class="fighter-label">
+            <span id="enemy-name"></span>
+            <span class="player-tag">P2</span>
+          </div>
+        </div>
+      </div>
+      <div id="banner"></div>
+      <div id="game-message"></div>
+      <div id="character-select">
+        <h1>Choose Your Fighter</h1>
+        <div id="select-columns">
+          <div class="select-column" id="p1-select">
+            <h2>Player 1</h2>
+            <div class="cards"></div>
+            <p class="select-hint">A / D to pick &middot; Space to lock in</p>
+            <p class="select-ready">Ready!</p>
+          </div>
+          <div class="select-column" id="p2-select">
+            <h2>Player 2</h2>
+            <div class="cards"></div>
+            <p class="select-hint">&larr; / &rarr; to pick &middot; M to lock in</p>
+            <p class="select-ready">Ready!</p>
+          </div>
+        </div>
+      </div>
+      <canvas id="main-canvas"></canvas>
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"
+      integrity="sha512-VEBjfxWUOyzl0bAwh4gdLEaQyDYPvLrZql3pw1ifgb6fhEvZl9iDDehwHZ+dsMzA0Jfww8Xt7COSZuJ/slxc4Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="./js/classes.js"></script>
+    <script src="./js/characters.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/effects.js"></script>
+    <script src="./js/characterSelect.js"></script>
+  </body>
+</html>

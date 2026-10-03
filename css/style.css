@@ -1,0 +1,329 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Press+Start+2P&display=swap");
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #1b1530 0%, #050508 70%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Scaled to fit the window by fitToWindow() in effects.js */
+#game-screen {
+  position: relative;
+  flex-shrink: 0;
+  width: 1024px;
+  height: 576px;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
+}
+
+#main-canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* ---------- HUD ---------- */
+#hud {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding: 18px 20px;
+  gap: 12px;
+  font-family: "Press Start 2P", cursive;
+  color: white;
+}
+
+.hud-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.health-bar {
+  position: relative;
+  height: 26px;
+  border: 3px solid #f5f0e6;
+  border-radius: 4px;
+  background: #2a0f16;
+  box-shadow: 0 0 0 2px #000, 0 4px 10px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.health-fill,
+.health-trail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Bars drain toward the outside edge, anchored at the centre like classic fighters */
+#player-hud .health-fill,
+#player-hud .health-trail {
+  right: 0;
+}
+
+#enemy-hud .health-fill,
+#enemy-hud .health-trail {
+  left: 0;
+}
+
+.health-trail {
+  background: #fff1c1;
+}
+
+#player-health {
+  background: linear-gradient(#a5b4fc, #6366f1 55%, #4338ca);
+}
+
+#enemy-health {
+  background: linear-gradient(#fda4af, #f43f5e 55%, #be123c);
+}
+
+/* Shine across the top of the bar */
+.health-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 55% 0;
+  background: rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+}
+
+.fighter-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+#enemy-hud .fighter-label {
+  justify-content: flex-end;
+}
+
+.player-tag {
+  padding: 3px 5px;
+  border-radius: 3px;
+  font-size: 8px;
+  text-shadow: none;
+}
+
+#player-hud .player-tag {
+  background: #6366f1;
+}
+
+#enemy-hud .player-tag {
+  background: #f43f5e;
+}
+
+#timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 74px;
+  height: 58px;
+  margin-top: -6px;
+  border: 3px solid #f5f0e6;
+  border-radius: 6px;
+  background: linear-gradient(#2b2440, #120e1d);
+  box-shadow: 0 0 0 2px #000, 0 4px 10px rgba(0, 0, 0, 0.6);
+  color: #ffe9a8;
+  font-size: 22px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+#timer.low {
+  color: #ff5a6e;
+  animation: timer-pulse 1s steps(2) infinite;
+}
+
+@keyframes timer-pulse {
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+/* ---------- "FIGHT!" banner ---------- */
+#banner {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Press Start 2P", cursive;
+  font-size: 72px;
+  color: #ffe9a8;
+  text-shadow: 4px 4px 0 #b91c1c, 8px 8px 0 #000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#banner.show {
+  animation: banner 1.3s ease-out forwards;
+}
+
+@keyframes banner {
+  0% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  75% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+
+/* ---------- K.O. / winner screen ---------- */
+#game-message {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.75));
+  font-family: "Press Start 2P", cursive;
+  color: white;
+  text-align: center;
+}
+
+#game-message.show {
+  display: flex;
+  animation: fade-in 0.4s ease-out;
+}
+
+.message-title {
+  font-size: 80px;
+  color: #ffe9a8;
+  text-shadow: 4px 4px 0 #b91c1c, 8px 8px 0 #000;
+  animation: banner-pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+.message-result {
+  font-size: 16px;
+  text-shadow: 3px 3px 0 #000;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes banner-pop {
+  from {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+#character-select {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  font-family: "Press Start 2P", cursive;
+  text-align: center;
+}
+
+#character-select h1 {
+  font-size: 24px;
+}
+
+#select-columns {
+  display: flex;
+  gap: 32px;
+}
+
+.select-column h2 {
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+
+#p1-select {
+  --player-color: #818cf8;
+}
+
+#p2-select {
+  --player-color: #e11d48;
+}
+
+.cards {
+  display: flex;
+  gap: 6px;
+}
+
+.character-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 88px;
+  padding: 10px 6px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 7px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.character-card.selected {
+  border-color: var(--player-color);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.select-column.locked .character-card {
+  cursor: default;
+}
+
+.select-column.locked .character-card:not(.selected) {
+  opacity: 0.35;
+}
+
+.select-hint,
+.select-ready {
+  margin-top: 14px;
+  font-size: 8px;
+}
+
+.select-ready {
+  display: none;
+  color: var(--player-color);
+}
+
+.select-column.locked .select-hint {
+  display: none;
+}
+
+.select-column.locked .select-ready {
+  display: block;
+}
