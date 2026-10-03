@@ -69,6 +69,9 @@ class Sprite {
   }
 }
 
+// Gap kept between a fighter's hitbox and the left/right edge of the screen
+const SCREEN_MARGIN = 10;
+
 class Fighter extends Sprite {
   constructor({
     position,
@@ -147,6 +150,12 @@ class Fighter extends Sprite {
 
     this.position.x += this.velocity.x;
     this.position.y += this.velocity.y;
+
+    // Screen edges: left and right only, jumping height isn't capped
+    this.position.x = Math.max(
+      SCREEN_MARGIN,
+      Math.min(canvas.width - this.width - SCREEN_MARGIN, this.position.x)
+    );
 
     // Gravity Function
     if (this.position.y + this.height + this.velocity.y >= canvas.height - 94) {
