@@ -145,22 +145,8 @@ const characters = {
   },
 };
 
-const FIGHTER_WIDTH = 50;
-
 function createFighter(characterKey, { position, facing }) {
   const character = characters[characterKey];
-  const flip = character.facing !== facing;
-
-  const attackBox = {
-    offset: { ...character.attackBox.offset },
-    width: character.attackBox.width,
-    height: character.attackBox.height,
-  };
-  // Mirror the attack box to the other side of the fighter's hitbox
-  if (flip) {
-    attackBox.offset.x =
-      FIGHTER_WIDTH - character.attackBox.offset.x - character.attackBox.width;
-  }
 
   // Fighter attaches Image objects to its sprites, so give each fighter its own copy
   const sprites = {};
@@ -176,11 +162,12 @@ function createFighter(characterKey, { position, facing }) {
     scale: character.scale,
     offset: character.offset,
     sprites,
-    attackBox,
-    flip,
+    attackBox: character.attackBox,
+    nativeFacing: character.facing,
     pivot: character.pivot,
     hitFrame: character.hitFrame,
   });
   fighter.name = character.name;
+  fighter.face(facing);
   return fighter;
 }

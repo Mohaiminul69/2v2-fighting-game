@@ -84,7 +84,7 @@ class Fighter extends Sprite {
       width: undefined,
       height: undefined,
     },
-    flip = false,
+    nativeFacing = "right",
     pivot = 0,
     hitFrame = 0,
   }) {
@@ -94,10 +94,12 @@ class Fighter extends Sprite {
       scale,
       framesMax,
       offset,
-      flip,
       pivot,
     });
     this.hitFrame = hitFrame;
+    // The direction the sprites are drawn facing; facing the other way mirrors them
+    this.nativeFacing = nativeFacing;
+    this.facing = nativeFacing;
     this.velocity = velocity;
     this.width = 50;
     this.height = 150;
@@ -107,10 +109,11 @@ class Fighter extends Sprite {
         x: this.position.x,
         y: this.position.y,
       },
-      offset: attackBox.offset,
+      offset: { ...attackBox.offset },
       width: attackBox.width,
       height: attackBox.height,
     };
+    this.nativeAttackOffsetX = attackBox.offset.x;
     this.color = color;
     this.isAttacking;
     this.health = 100;
@@ -151,6 +154,26 @@ class Fighter extends Sprite {
       this.position.y = 332;
     } else this.velocity.y += gravity;
     console.log(this.position.y);
+  }
+
+  // True while an animation that must finish is playing (attack, getting hit, dying)
+  isBusy() {
+    if (this.image === this.sprites.death.image) return true;
+    return (
+      (this.image === this.sprites.attack1.image ||
+        this.image === this.sprites.takeHit.image) &&
+      this.framesCurrent < this.framesMax - 1
+    );
+  }
+
+  face(direction) {
+    if (this.facing === direction || this.isBusy()) return;
+    this.facing = direction;
+    this.flip = direction !== this.nativeFacing;
+    // Mirror the attack box to the other side of the hitbox
+    this.attackBox.offset.x = this.flip
+      ? this.width - this.nativeAttackOffsetX - this.attackBox.width
+      : this.nativeAttackOffsetX;
   }
 
   attack() {

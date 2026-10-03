@@ -48,6 +48,13 @@ function startFight(playerCharacter, enemyCharacter) {
   decreaseTimer();
 }
 
+// Fighters turn to face each other (not in the middle of an attack or a hit)
+function updateFacing() {
+  const playerOnLeft = player.position.x <= enemy.position.x;
+  player.face(playerOnLeft ? "right" : "left");
+  enemy.face(playerOnLeft ? "left" : "right");
+}
+
 const keys = {
   a: {
     pressed: false,
@@ -86,6 +93,8 @@ function animate() {
   drawVignette();
 
   if (!fightStarted) return;
+
+  updateFacing();
 
   player.velocity.x = 0;
   enemy.velocity.x = 0;
